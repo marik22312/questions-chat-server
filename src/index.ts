@@ -19,3 +19,10 @@ io.on('connection', function (socket) {
     console.log(data);
   });
 });
+
+io.on('news', socket => {
+	console.log('Event recieved!');
+	socket.emit('event', {
+		hello: 'world'
+	})
+})
