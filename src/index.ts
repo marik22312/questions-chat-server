@@ -6,23 +6,17 @@ const app = express();
 
 const httpServer = new nativeHttpDriver.Server(app);
 const io = socketIo(httpServer);
-httpServer.listen(process.env.PORT || 3000);
 // WARNING: app.listen(80) will NOT work here!
 
 app.get('/', function (req, res) {
-  res.send('Omer Ya Beiza');
+	res.send('Omer Ya Beiza');
 });
 
 io.on('connection', function (socket) {
-  socket.emit('news', { hello: 'world' });
-  socket.on('my other event', function (data) {
-    console.log(data);
-  });
+	socket.emit('news', { hello: 'world' });
+	socket.on('message', function (data) {
+		console.log(data);
+		socket.emit('messageRecieved', data)
+	});
 });
-
-io.on('news', socket => {
-	console.log('Event recieved!');
-	socket.emit('event', {
-		hello: 'world'
-	})
-})
+httpServer.listen(process.env.PORT || 3000);
