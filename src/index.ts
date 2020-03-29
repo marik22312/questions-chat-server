@@ -6,7 +6,7 @@ const app = express();
 
 const httpServer = new nativeHttpDriver.Server(app);
 const io = socketIo(httpServer);
-httpServer.listen(3000);
+httpServer.listen(process.env.PORT || 3000);
 // WARNING: app.listen(80) will NOT work here!
 
 app.get('/', function (req, res) {
