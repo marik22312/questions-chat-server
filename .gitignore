@@ -1,0 +1,11 @@
+#build files
+/dist
+/build
+
+#configurations
+.env
+*.lock
+*.log
+
+#Modules
+node_modules/

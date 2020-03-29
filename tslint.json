@@ -1,0 +1,17 @@
+{
+    "defaultSeverity": "error",
+    "extends": [
+        "tslint-config-prettier",
+		"tslint:recommended"
+    ],
+    "jsRules": {},
+    "rules": {
+		"no-unused-variable": true,
+		"interface-name": false,
+		"object-literal-sort-keys": false,
+		"prettier": true,
+		"indent": [true, "tabs", 2],
+		"ordered-imports": false,
+		"quotemark": false
+    }
+}

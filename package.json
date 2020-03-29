@@ -1,0 +1,27 @@
+{
+  "name": "questions-chat-server",
+  "version": "0.1.0",
+  "main": "index.js",
+  "repository": "git@github.com:marik22312/questions-chat-server.git",
+  "author": "Marik Sh <mark22312@gmail.com>",
+  "license": "MIT",
+  "private": false,
+  "scripts": {
+    "tsc": "tsc",
+    "watch": "nodemon --exec \"npm run build && npm run start:dev\" --watch src --ext ts",
+    "start": "npm run start:prod",
+    "start:dev": "NODE_ENV=development node dist/index.js",
+    "start:prod": "NODE_ENV=production node dist/index.js",
+    "build": "rm -rf dist && tsc -p tsconfig.json",
+    "test": "jest"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "socket.io": "^2.3.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.3",
+    "nodemon": "^2.0.2",
+    "typescript": "^3.8.3"
+  }
+}
