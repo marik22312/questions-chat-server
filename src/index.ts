@@ -24,7 +24,7 @@ io.on('connection', function (socket) {
 		const user: ChatUser = {
 			userId: data.userId,
 			name: data.name,
-			socketId
+			socketId,
 		}
 		connectedUsers.push(user);
 		if (!waitingPeers.length) {
@@ -61,6 +61,22 @@ io.on('connection', function (socket) {
 	socket.on('DEBUG', (data) => {
 		console.log('Peers', waitingPeers);
 		console.log('Peered', activeChats);
+	})
+
+	socket.on('disconnect', () => {
+		const user = connectedUsers.find(user => user.socketId === socketId);
+		if (!user) {
+			return;
+		}
+		const userIndex = connectedUsers.findIndex(user => user.socketId === socketId);
+
+		const peer = {...activeChats[user.userId]};
+		delete activeChats[user.userId];
+		delete activeChats[peer.userId];
+		connectedUsers.splice(userIndex, 1);
+		io.to(peer.socketId).emit(ChatEvents.PEER_DISCONNECTED)
+
+
 	})
 })
 

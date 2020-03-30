@@ -38,6 +38,9 @@ interface ChatMessageResponse {
 }
 ```
 
+### Peer disconnection
+When a peer disconnects from the socket, his active chat parthner will receive a `PEER_DISCONNECTED` event.
+
 ## Author
 
 👤 **Marik Shnitman <mark22312@gmail.com>**
