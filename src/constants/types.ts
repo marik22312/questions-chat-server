@@ -8,10 +8,13 @@ interface ReadyForPeerDto {
 	name: string;
 }
 
-interface ChatMessageDto {
-	from: string;
+interface ChatMessageEvent {
 	to: string;
 	message: string;
+}
+
+interface ChatMessageResponse extends ChatMessageEvent {
+	from: string;
 }
 
 interface ChatUser {

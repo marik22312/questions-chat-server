@@ -20,6 +20,24 @@ interface ChatUser {
 }
 ```
 
+### Sending messages
+Send `CHAT_MESSAGE` event
+```typescript
+interface ChatMessageEvent {
+	to: string;
+	message: string;
+}
+```
+
+the server will handle the peering, and will respond with `CHAT_MESSAGE` to both peers:
+```typescript
+interface ChatMessageResponse {
+	to: string;
+	message: string;
+	from: string;
+}
+```
+
 ## Author
 
 👤 **Marik Shnitman <mark22312@gmail.com>**

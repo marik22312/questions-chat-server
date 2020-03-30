@@ -11,6 +11,7 @@ const io = socketIo(httpServer);
 
 const waitingPeers: ChatUser[] = [];
 const activeChats: { [key: string]: ChatUser; } = {};
+const connectedUsers: ChatUser[] = [];
 
 app.get('/', function (req, res) {
 	res.send('Omer Ya Beiza');
@@ -25,6 +26,7 @@ io.on('connection', function (socket) {
 			name: data.name,
 			socketId
 		}
+		connectedUsers.push(user);
 		if (!waitingPeers.length) {
 			waitingPeers.push(user);
 		} else {
@@ -37,6 +39,23 @@ io.on('connection', function (socket) {
 			}
 
 		}
+	})
+
+	socket.on(ChatEvents.CHAT_MESSAGE, (data: ChatMessageEvent) => {
+		const from = connectedUsers.find(user => user.socketId === socket.id);
+		if (!from) {
+			return;
+		}
+		const to = activeChats[from.userId];
+
+		const message: ChatMessageResponse = {
+			...data,
+			from: from.name
+		}
+
+		socket.emit(ChatEvents.CHAT_MESSAGE, message);
+		io.to(to.socketId).emit(ChatEvents.CHAT_MESSAGE, message);
+		console.log('from', from,'to',to)
 	})
 
 	socket.on('DEBUG', (data) => {
