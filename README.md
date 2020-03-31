@@ -45,7 +45,7 @@ When a peer disconnects from the socket, his active chat parthner will receive a
 
 | Error         | Event Name  | Message Type | Description        |
 |---------------|-------------|--------------|--------------------|
-| General Error | CHAT__ERROR | String       | General Chat Error |
+| General Error | `CHAT__ERROR` | String       | General Chat Error |
 ## Author
 
 👤 **Marik Shnitman <mark22312@gmail.com>**
