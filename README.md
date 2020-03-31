@@ -41,6 +41,13 @@ interface ChatMessageResponse {
 ### Peer disconnection
 When a peer disconnects from the socket, his active chat parthner will receive a `PEER_DISCONNECTED` event.
 
+## Errors
+
+```typescript
+enum ErrorEvents {
+	CHAT__ERROR = 'CHAT_ERROR' // General chat error, will come with a string message.
+}
+```
 ## Author
 
 👤 **Marik Shnitman <mark22312@gmail.com>**
