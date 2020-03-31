@@ -43,11 +43,9 @@ When a peer disconnects from the socket, his active chat parthner will receive a
 
 ## Errors
 
-```typescript
-enum ErrorEvents {
-	CHAT__ERROR = 'CHAT_ERROR' // General chat error, will come with a string message.
-}
-```
+| Error         | Event Name  | Message Type | Description        |
+|---------------|-------------|--------------|--------------------|
+| General Error | CHAT__ERROR | String       | General Chat Error |
 ## Author
 
 👤 **Marik Shnitman <mark22312@gmail.com>**
