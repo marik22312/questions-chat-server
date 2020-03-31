@@ -1,7 +1,7 @@
 import express from 'express';
 import nativeHttpDriver from 'http';
 import socketIo from 'socket.io';
-import { ChatEvents, ErrorEvents } from './constants/events';
+import { ChatEvents, ErrorEvents, ChatErrors } from './constants/events';
 
 const app = express();
 
@@ -48,12 +48,12 @@ io.on('connection', function (socket) {
 	socket.on(ChatEvents.CHAT_MESSAGE, (data: ChatMessageEvent) => {
 		const from = connectedUsers.find(user => user.socketId === socket.id);
 		if (!from) {
-			return emitError('You dont exist here anymore!')
+			return emitError(ChatErrors.MISSING_FROM)
 		}
 		const to = activeChats[from.userId];
 		
 		if (!to) {
-			return emitError('Your dude is logged of maaaan')
+			return emitError(ChatErrors.MISSING_TO)
 		}
 
 		const message: ChatMessageResponse = {
@@ -74,12 +74,12 @@ io.on('connection', function (socket) {
 
 		const from = connectedUsers.find(user => user.socketId === socket.id);
 		if (!from) {
-			return emitError('You dont exist here anymore!')
+			return emitError(ChatErrors.MISSING_FROM)
 		}
 		const to = activeChats[from.userId];
 
 		if (!to) {
-			return emitError('You dont exist here anymore!')
+			return emitError(ChatErrors.MISSING_TO)
 		}
 
 		
