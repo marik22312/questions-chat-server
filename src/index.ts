@@ -48,11 +48,12 @@ io.on('connection', function (socket) {
 	socket.on(ChatEvents.CHAT_MESSAGE, (data: ChatMessageEvent) => {
 		const from = connectedUsers.find(user => user.socketId === socket.id);
 		if (!from) {
-			return;
+			return emitError('You dont exist here anymore!')
 		}
 		const to = activeChats[from.userId];
+		
 		if (!to) {
-			return;
+			return emitError('Your dude is logged of maaaan')
 		}
 
 		const message: ChatMessageResponse = {
@@ -65,18 +66,25 @@ io.on('connection', function (socket) {
 		console.log('from', from,'to',to)
 	})
 
-	// socket.on(ChatEvents.GET_QUESTION, () => {
-	// 	// get question
-	// 	const question = {
-	// 		question: 'How much wood would a woodchuck chuck if a woodchuck would chuck wood?'
-	// 	}
+	socket.on(ChatEvents.GET_QUESTION, () => {
+		// get question
+		const question = {
+			question: 'How much wood would a woodchuck chuck if a woodchuck would chuck wood?'
+		}
 
-	// 	const from = connectedUsers.find(user => user.socketId === socket.id);
-	// 	const to = activeChats[from.userId];
+		const from = connectedUsers.find(user => user.socketId === socket.id);
+		if (!from) {
+			return emitError('You dont exist here anymore!')
+		}
+		const to = activeChats[from.userId];
+
+		if (!to) {
+			return emitError('You dont exist here anymore!')
+		}
 
 		
-	// 	// serve question to both
-	// })
+		// serve question to both
+	})
 
 	socket.on('DEBUG', (data) => {
 		console.log('Peers', waitingPeers);
