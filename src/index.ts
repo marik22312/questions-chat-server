@@ -1,7 +1,7 @@
 import express from 'express';
 import nativeHttpDriver from 'http';
 import socketIo from 'socket.io';
-import { ChatEvents } from './constants/events';
+import { ChatEvents, ErrorEvents } from './constants/events';
 
 const app = express();
 
@@ -19,6 +19,10 @@ app.get('/', function (req, res) {
 
 io.on('connection', function (socket) {
 	const socketId = socket.id;
+
+	const emitError = (message: any) => {
+		socket.emit(ErrorEvents.CHAT__ERROR, message)
+	}
 
 	socket.on(ChatEvents.READY_FOR_PEERING, (data: ReadyForPeerDto) => {
 		const user: ChatUser = {
@@ -47,6 +51,9 @@ io.on('connection', function (socket) {
 			return;
 		}
 		const to = activeChats[from.userId];
+		if (!to) {
+			return;
+		}
 
 		const message: ChatMessageResponse = {
 			...data,
@@ -57,6 +64,19 @@ io.on('connection', function (socket) {
 		io.to(to.socketId).emit(ChatEvents.CHAT_MESSAGE, message);
 		console.log('from', from,'to',to)
 	})
+
+	// socket.on(ChatEvents.GET_QUESTION, () => {
+	// 	// get question
+	// 	const question = {
+	// 		question: 'How much wood would a woodchuck chuck if a woodchuck would chuck wood?'
+	// 	}
+
+	// 	const from = connectedUsers.find(user => user.socketId === socket.id);
+	// 	const to = activeChats[from.userId];
+
+		
+	// 	// serve question to both
+	// })
 
 	socket.on('DEBUG', (data) => {
 		console.log('Peers', waitingPeers);
@@ -75,8 +95,6 @@ io.on('connection', function (socket) {
 		delete activeChats[peer.userId];
 		connectedUsers.splice(userIndex, 1);
 		io.to(peer.socketId).emit(ChatEvents.PEER_DISCONNECTED)
-
-
 	})
 })
 

@@ -22,3 +22,5 @@ interface ChatUser {
 	userId: string;
 	name: string;
 }
+
+type ActiveChatResponse = ChatMessageResponse
