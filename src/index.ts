@@ -30,7 +30,6 @@ io.on('connection', (socket) => {
 	interface EmitToPeersOptions {
 		to: ChatUser,
 		from: ChatUser,
-		event: ChatEvents
 		message: string,
 		type: MessageType
 	}
@@ -42,8 +41,8 @@ io.on('connection', (socket) => {
 			timestamp: Date.now(),
 			type: options.type
 		}
-		io.to(options.to.socketId).emit(options.event, responseMessage);
-		socket.emit(options.event, responseMessage);
+		io.to(options.to.socketId).emit(ChatEvents.CHAT_MESSAGE, responseMessage);
+		socket.emit(ChatEvents.CHAT_MESSAGE, responseMessage);
 	}
 
 	socket.on(ChatEvents.READY_FOR_PEERING, (data: ReadyForPeerDto) => {
@@ -78,7 +77,7 @@ io.on('connection', (socket) => {
 			return emitError(ChatErrors.MISSING_TO)
 		}
 
-		emitToPeers({to, message: data.message, event: ChatEvents.CHAT_MESSAGE, from, type: MessageType.MESSAGE});
+		emitToPeers({to, message: data.message, from, type: MessageType.MESSAGE});
 	})
 
 	socket.on(ChatEvents.GET_QUESTION, () => {
@@ -96,7 +95,7 @@ io.on('connection', (socket) => {
 		}
 
 
-		emitToPeers({to, message: question, event: ChatEvents.GET_QUESTION, type: MessageType.QUESTION, from});
+		emitToPeers({to, message: question, type: MessageType.QUESTION, from});
 	})
 
 	socket.on('disconnect', () => {
