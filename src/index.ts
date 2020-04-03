@@ -113,4 +113,7 @@ io.on('connection', (socket) => {
 	})
 })
 
-httpServer.listen(process.env.PORT || 3000);
+httpServer.listen(parseInt(process.env.PORT, 10) || 3000, () => {
+	// tslint:disable-next-line: no-console
+	console.log('Server is connected');
+});
