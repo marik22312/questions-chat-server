@@ -34,9 +34,14 @@ the server will handle the peering, and will respond with `CHAT_MESSAGE` to both
 interface ChatMessageResponse {
 	to: string;
 	message: string;
-	from: string;
+	from: ChatUser;
+	timestamp: number;
+	type: 'message' | 'question';
 }
+
 ```
+### Getting a question
+Send te `GET_QUESTION` event to the socket. It'll get you what you want 😉
 
 ### Peer disconnection
 When a peer disconnects from the socket, his active chat parthner will receive a `PEER_DISCONNECTED` event.

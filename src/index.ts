@@ -3,7 +3,8 @@ import "./env";
 import express from 'express';
 import nativeHttpDriver from 'http';
 import socketIo from 'socket.io';
-import { ChatEvents, ErrorEvents, ChatErrors } from './constants/events';
+import { ChatEvents, ErrorEvents, ChatErrors, MessageType } from './constants/events';
+import { ChatUser, ChatMessageResponse, ReadyForPeerDto, ChatMessageEvent } from './constants/types';
 
 const app = express();
 
@@ -28,12 +29,21 @@ io.on('connection', (socket) => {
 
 	interface EmitToPeersOptions {
 		to: ChatUser,
+		from: ChatUser,
 		event: ChatEvents
-		message: any
+		message: string,
+		type: MessageType
 	}
 	const emitToPeers = (options: EmitToPeersOptions) => {
-		io.to(options.to.socketId).emit(options.event, options.message);
-		socket.emit(options.event, options.message);
+		const responseMessage: ChatMessageResponse = {
+			message: options.message,
+			from: options.from,
+			to: options.to.userId,
+			timestamp: Date.now(),
+			type: options.type
+		}
+		io.to(options.to.socketId).emit(options.event, responseMessage);
+		socket.emit(options.event, responseMessage);
 	}
 
 	socket.on(ChatEvents.READY_FOR_PEERING, (data: ReadyForPeerDto) => {
@@ -68,21 +78,12 @@ io.on('connection', (socket) => {
 			return emitError(ChatErrors.MISSING_TO)
 		}
 
-		const message: ChatMessageResponse = {
-			...data,
-			from: from.name,
-			timestamp: Date.now(),
-			type: MessageType.MESSAGE
-		}
-
-		emitToPeers({to, message, event: ChatEvents.CHAT_MESSAGE});
+		emitToPeers({to, message: data.message, event: ChatEvents.CHAT_MESSAGE, from, type: MessageType.MESSAGE});
 	})
 
 	socket.on(ChatEvents.GET_QUESTION, () => {
 		// get question
-		const question = {
-			question: 'How much wood would a woodchuck chuck if a woodchuck would chuck wood?'
-		}
+		const question = 'How much wood would a woodchuck chuck if a woodchuck would chuck wood?';
 
 		const from = connectedUsers.find(user => user.socketId === socket.id);
 		if (!from) {
@@ -95,7 +96,7 @@ io.on('connection', (socket) => {
 		}
 
 
-		emitToPeers({to, message: question, event: ChatEvents.GET_QUESTION});
+		emitToPeers({to, message: question, event: ChatEvents.GET_QUESTION, type: MessageType.QUESTION, from});
 	})
 
 	socket.on('disconnect', () => {

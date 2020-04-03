@@ -1,31 +1,29 @@
-interface PeerFoundObjectDto {
+import { MessageType } from './events';
+
+export interface PeerFoundObjectDto {
 	userId: string;
 	name: string;
 }
 
-interface ReadyForPeerDto {
+export interface ReadyForPeerDto {
 	userId: string;
 	name: string;
 }
 
-interface ChatMessageEvent {
+export interface ChatMessageEvent {
 	to: string;
 	message: string;
 }
-enum MessageType {
-	MESSAGE = 'message',
-	QUESTION = 'question'
-}
-interface ChatMessageResponse extends ChatMessageEvent {
-	from: string;
+export interface ChatMessageResponse extends ChatMessageEvent {
+	from: ChatUser;
 	timestamp: number;
 	type: MessageType
 }
 
-interface ChatUser {
+export interface ChatUser {
 	socketId: string;
 	userId: string;
 	name: string;
 }
 
-type ActiveChatResponse = ChatMessageResponse
+export type ActiveChatResponse = ChatMessageResponse

@@ -17,3 +17,8 @@ export enum ChatErrors {
 	MISSING_FROM = 'You are not participating in any chats at the moment. please peer again.',
 	MISSING_TO = `Couldn't find your recipient, please be sure you didn't receive a 'PEER_DISCONNECTED' event.`
 }
+
+export enum MessageType {
+	MESSAGE = 'message',
+	QUESTION = 'question'
+}
