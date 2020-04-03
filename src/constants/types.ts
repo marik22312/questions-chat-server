@@ -12,9 +12,14 @@ interface ChatMessageEvent {
 	to: string;
 	message: string;
 }
-
+enum MessageType {
+	MESSAGE = 'message',
+	QUESTION = 'question'
+}
 interface ChatMessageResponse extends ChatMessageEvent {
 	from: string;
+	timestamp: number;
+	type: MessageType
 }
 
 interface ChatUser {

@@ -1,3 +1,5 @@
+import "./env";
+
 import express from 'express';
 import nativeHttpDriver from 'http';
 import socketIo from 'socket.io';
@@ -13,15 +15,25 @@ const waitingPeers: ChatUser[] = [];
 const activeChats: { [key: string]: ChatUser; } = {};
 const connectedUsers: ChatUser[] = [];
 
-app.get('/', function (req, res) {
+app.get('/', (req, res) => {
 	res.send('Omer Ya Beiza');
 });
 
-io.on('connection', function (socket) {
+io.on('connection', (socket) => {
 	const socketId = socket.id;
 
 	const emitError = (message: any) => {
 		socket.emit(ErrorEvents.CHAT__ERROR, message)
+	}
+
+	interface EmitToPeersOptions {
+		to: ChatUser,
+		event: ChatEvents
+		message: any
+	}
+	const emitToPeers = (options: EmitToPeersOptions) => {
+		io.to(options.to.socketId).emit(options.event, options.message);
+		socket.emit(options.event, options.message);
 	}
 
 	socket.on(ChatEvents.READY_FOR_PEERING, (data: ReadyForPeerDto) => {
@@ -51,19 +63,19 @@ io.on('connection', function (socket) {
 			return emitError(ChatErrors.MISSING_FROM)
 		}
 		const to = activeChats[from.userId];
-		
+
 		if (!to) {
 			return emitError(ChatErrors.MISSING_TO)
 		}
 
 		const message: ChatMessageResponse = {
 			...data,
-			from: from.name
+			from: from.name,
+			timestamp: Date.now(),
+			type: MessageType.MESSAGE
 		}
 
-		socket.emit(ChatEvents.CHAT_MESSAGE, message);
-		io.to(to.socketId).emit(ChatEvents.CHAT_MESSAGE, message);
-		console.log('from', from,'to',to)
+		emitToPeers({to, message, event: ChatEvents.CHAT_MESSAGE});
 	})
 
 	socket.on(ChatEvents.GET_QUESTION, () => {
@@ -82,21 +94,16 @@ io.on('connection', function (socket) {
 			return emitError(ChatErrors.MISSING_TO)
 		}
 
-		
-		// serve question to both
-	})
 
-	socket.on('DEBUG', (data) => {
-		console.log('Peers', waitingPeers);
-		console.log('Peered', activeChats);
+		emitToPeers({to, message: question, event: ChatEvents.GET_QUESTION});
 	})
 
 	socket.on('disconnect', () => {
-		const user = connectedUsers.find(user => user.socketId === socketId);
+		const user = connectedUsers.find(u => u.socketId === socketId);
 		if (!user) {
 			return;
 		}
-		const userIndex = connectedUsers.findIndex(user => user.socketId === socketId);
+		const userIndex = connectedUsers.findIndex(u => u.socketId === socketId);
 
 		const peer = {...activeChats[user.userId]};
 		delete activeChats[user.userId];
