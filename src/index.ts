@@ -5,6 +5,8 @@ import nativeHttpDriver from 'http';
 import socketIo from 'socket.io';
 import { ChatEvents, ErrorEvents, ChatErrors, MessageType } from './constants/events';
 import { ChatUser, ChatMessageResponse, ReadyForPeerDto, ChatMessageEvent } from './constants/types';
+import { PORT, BASE_QUESTION_URI } from './config';
+import { QuestionsService } from './services/QuestionsService';
 
 const app = express();
 
@@ -15,6 +17,8 @@ const io = socketIo(httpServer);
 const waitingPeers: ChatUser[] = [];
 const activeChats: { [key: string]: ChatUser; } = {};
 const connectedUsers: ChatUser[] = [];
+
+const questionsService = new QuestionsService(BASE_QUESTION_URI);
 
 app.get('/', (req, res) => {
 	res.send('Omer Ya Beiza');
@@ -80,10 +84,9 @@ io.on('connection', (socket) => {
 		emitToPeers({to, message: data.message, from, type: MessageType.MESSAGE});
 	})
 
-	socket.on(ChatEvents.GET_QUESTION, () => {
+	socket.on(ChatEvents.GET_QUESTION, async () => {
 		// get question
-		const question = 'How much wood would a woodchuck chuck if a woodchuck would chuck wood?';
-
+		const question = await questionsService.getOneQuestion();
 		const from = connectedUsers.find(user => user.socketId === socket.id);
 		if (!from) {
 			return emitError(ChatErrors.MISSING_FROM)
@@ -95,7 +98,7 @@ io.on('connection', (socket) => {
 		}
 
 
-		emitToPeers({to, message: question, type: MessageType.QUESTION, from});
+		return emitToPeers({to, message: question, type: MessageType.QUESTION, from});
 	})
 
 	socket.on('disconnect', () => {
@@ -113,7 +116,7 @@ io.on('connection', (socket) => {
 	})
 })
 
-httpServer.listen(parseInt(process.env.PORT, 10) || 3000, () => {
+httpServer.listen(parseInt(PORT, 10), () => {
 	// tslint:disable-next-line: no-console
 	console.log('Server is connected');
 });
