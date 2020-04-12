@@ -7,8 +7,14 @@ import { ChatEvents, ErrorEvents, ChatErrors, MessageType } from './constants/ev
 import { ChatUser, ChatMessageResponse, ReadyForPeerDto, ChatMessageEvent } from './constants/types';
 import { PORT, BASE_QUESTION_URI } from './config';
 import { QuestionsService } from './services/QuestionsService';
+import { AuthRouter } from './routes/Auth.router';
+import { connect } from './models';
 
 const app = express();
+connect().then(() => {
+	// tslint:disable-next-line: no-console
+	console.log('MongoDB Connected Successfully!');
+});
 
 const httpServer = new nativeHttpDriver.Server(app);
 const io = socketIo(httpServer);
@@ -23,6 +29,8 @@ const questionsService = new QuestionsService(BASE_QUESTION_URI);
 app.get('/', (req, res) => {
 	res.send('Omer Ya Beiza');
 });
+
+app.use('/', AuthRouter);
 
 io.on('connection', (socket) => {
 	const socketId = socket.id;
@@ -118,5 +126,5 @@ io.on('connection', (socket) => {
 
 httpServer.listen(parseInt(PORT, 10), () => {
 	// tslint:disable-next-line: no-console
-	console.log('Server is connected');
+	console.log('Server is Listening on port', PORT);
 });
