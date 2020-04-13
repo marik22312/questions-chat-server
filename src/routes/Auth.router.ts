@@ -30,5 +30,6 @@ router
 	// 	}
 	// })
 	.post("/register", BodyParser.json(), cors(), usersController.registerNewUser)
+	.post("/login", BodyParser.json(), cors(), usersController.loginUser)
 
 export const AuthRouter = router;

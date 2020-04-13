@@ -15,7 +15,7 @@ export const UserSchema: Schema<IUsers> = new Schema({
 	password: {
 		type: Schema.Types.String,
 		required: true,
-		select: false
+		// select: false
 	},
 }, {
 	timestamps: true
