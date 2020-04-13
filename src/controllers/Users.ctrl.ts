@@ -18,24 +18,28 @@ export class UsersController {
 	}
 
 	public async registerNewUser(req: Request, res: Response) {
-		const validationSchema = Joi.object().keys({
-			email: Joi.string().email().required(),
-			password: Joi.string().min(8).required(),
-		});
+		try {
+			const validationSchema = Joi.object().keys({
+				email: Joi.string().email().required(),
+				password: Joi.string().min(8).required(),
+			});
 
-		const validation = validationSchema.validate(req.body);
+			const validation = validationSchema.validate(req.body);
 
-		if (validation.error) {
-			return res.send(validation.error.message);
+			if (validation.error) {
+				return res.send(validation.error.message);
+			}
+			const body = req.body as RegistrationBody;
+			const passwordHash = await this.identityService.hashPassword(body.password);
+			const user = await this.usersService.create(body.email, passwordHash);
+			const token = this.identityService.signAuthToken(user);
+			return res.json({
+				token,
+				user
+			})
+		} catch (err) {
+			res.send(err.message)
 		}
-		const body = req.body as RegistrationBody;
-		const passwordHash = await this.identityService.hashPassword(body.password);
-		const user = await this.usersService.create(body.email, passwordHash);
-		const token = this.identityService.signAuthToken(user);
-		return res.json({
-			token,
-			user
-		})
 	}
 
 	public async loginUser() {
