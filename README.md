@@ -1,6 +1,8 @@
 # Welcome to questions-chat-api 👋
 > Super simple random chat api!
 
+[Docs are Here!](docs/)
+
 ## Usage
  
 ### Peering to a waiting chat
