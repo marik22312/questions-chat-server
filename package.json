@@ -16,15 +16,24 @@
     "test": "jest"
   },
   "dependencies": {
+    "@hapi/joi": "^17.1.1",
     "axios": "^0.19.2",
+    "bcrypt": "^4.0.1",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.9.7",
     "socket.io": "^2.3.0"
   },
   "devDependencies": {
     "@types/axios": "^0.14.0",
+    "@types/bcrypt": "^3.0.0",
     "@types/express": "^4.17.3",
     "@types/hapi__joi": "^16.0.12",
+    "@types/jsonwebtoken": "^8.3.9",
+    "@types/mongoose": "^5.7.10",
     "@types/socket.io": "^2.1.4",
     "nodemon": "^2.0.2",
     "tslint": "^6.1.0",
