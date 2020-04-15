@@ -1,8 +1,9 @@
-import { IUsers } from "../schemas";
+import { IUsers, UserDto } from "../schemas";
 import { sign, verify } from "jsonwebtoken";
 import { UsersService } from "./UsersService";
 
 import bcrypt from "bcrypt";
+import { User } from '../models';
 // import { OAuth2Client } from "google-auth-library";
 
 export interface IdentityServiceConstructorProps {
@@ -19,7 +20,7 @@ export interface VerifiedUserDto {
 }
 
 export interface AuthenticationResponse {
-	user: AuthUserObj;
+	user: UserDto;
 	token: string;
 }
 
@@ -63,13 +64,10 @@ export class IdentityService {
 			throw Error("Wrong email or password");
 		}
 
-		const userAuthObj: AuthUserObj = {
-			_id: user._id,
-			email: user.email,
-		};
+		const userAuthObj = User(user);
 		const token = this.signAuthToken(userAuthObj);
 		const response: AuthenticationResponse = {
-			user: userAuthObj,
+			user: User(user),
 			token,
 		};
 

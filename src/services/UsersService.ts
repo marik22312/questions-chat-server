@@ -1,14 +1,9 @@
 import { Model, SchemaTimestampsConfig } from "mongoose";
-import { IUsers } from "../schemas";
+import { IUsers, RegistrationData, UserDto, UserWithPassword } from "../schemas";
 import { UsersModel } from "../models";
 
 export interface IUsersServiceConstructor {
 	model: Model<IUsers>;
-}
-
-export interface UserDto extends SchemaTimestampsConfig {
-	_id: string;
-	email: string;
 }
 
 export interface Filter {
@@ -19,28 +14,25 @@ export interface Filter {
 export class UsersService {
 	public static readonly limit: number = 20;
 
-	private readonly model: Model<IUsers>;
+	private readonly model: Model<UserWithPassword>;
 
 	constructor() {
 		this.model = UsersModel;
 	}
 
-	public getById(id: string): Promise<IUsers | null> {
+	public getById(id: string): Promise<UserWithPassword | null> {
 		return this.model.findById(id).populate("roles").exec();
 	}
-	public getByEmail(email: string): Promise<IUsers | null> {
+	public getByEmail(email: string): Promise<UserWithPassword | null> {
 		return this.model.findOne({ email }).populate("roles").exec();
 	}
-	public async create(email: string, password: string): Promise<UserDto> {
-		const user = await this.model.create({
-			email,
+	public async create(data: RegistrationData, password: string): Promise<IUsers> {
+		return this.model.create({
+			email: data.email,
+			nickname: data.nickname,
+			preference: data.preference,
+			gender: data.gender,
 			password,
 		});
-		return {
-			_id: user._id,
-			email: user.email,
-			createdAt: user.createdAt,
-			updatedAt: user.createdAt,
-		}
 	}
 }

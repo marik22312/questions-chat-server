@@ -2,11 +2,8 @@ import { UsersService } from "../services/UsersService";
 import * as Joi from "@hapi/joi";
 import { Request, Response } from "express";
 import { IdentityService } from "../services/identity.service";
+import { RegistrationData } from '../schemas';
 
-export interface RegistrationBody {
-	email: string;
-	password: string;
-}
 
 export class UsersController {
 	constructor(
@@ -22,6 +19,9 @@ export class UsersController {
 			const validationSchema = Joi.object().keys({
 				email: Joi.string().email().required(),
 				password: Joi.string().min(8).required(),
+				nickname: Joi.string().min(4).max(64).required(),
+				gender: Joi.string().valid("M", "F").required(),
+				preference: Joi.string().valid("M", "F", "A").required(),
 			});
 
 			const validation = validationSchema.validate(req.body);
@@ -29,16 +29,18 @@ export class UsersController {
 			if (validation.error) {
 				return res.send(validation.error.message);
 			}
-			const body = req.body as RegistrationBody;
-			const passwordHash = await this.identityService.hashPassword(body.password);
-			const user = await this.usersService.create(body.email, passwordHash);
+			const body = req.body as RegistrationData;
+			const passwordHash = await this.identityService.hashPassword(
+				body.password
+			);
+			const user = await this.usersService.create(body, passwordHash);
 			const token = this.identityService.signAuthToken(user);
 			return res.json({
 				token,
-				user
-			})
+				user,
+			});
 		} catch (err) {
-			res.send(err.message)
+			res.send(err.message);
 		}
 	}
 
@@ -55,13 +57,15 @@ export class UsersController {
 				return res.send(validation.error.message);
 			}
 
-			const body = req.body as RegistrationBody
+			const body = req.body as RegistrationData;
 
-			const response = await this.identityService.authenticateUserByEmailAndPassword(body.email, body.password);
+			const response = await this.identityService.authenticateUserByEmailAndPassword(
+				body.email,
+				body.password
+			);
 			return res.json(response);
-
 		} catch (err) {
-			return res.send(err.message)
+			return res.send(err.message);
 		}
 	}
 
