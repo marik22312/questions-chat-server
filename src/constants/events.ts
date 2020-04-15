@@ -10,7 +10,7 @@ export enum ChatEvents {
 }
 
 export enum ErrorEvents {
-	CHAT__ERROR = 'CHAT_ERROR'
+	CHAT_ERROR = 'CHAT_ERROR'
 }
 
 export enum ChatErrors {

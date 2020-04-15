@@ -36,7 +36,7 @@ io.on('connection', (socket) => {
 	const socketId = socket.id;
 
 	const emitError = (message: any) => {
-		socket.emit(ErrorEvents.CHAT__ERROR, message)
+		socket.emit(ErrorEvents.CHAT_ERROR, message)
 	}
 
 	interface EmitToPeersOptions {
