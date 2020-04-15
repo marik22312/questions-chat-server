@@ -22,8 +22,8 @@
  ### Response
  ```typescript
  interface AuthResponse {
-	"user": UserDto,
-	"token": string // Bearer token, used for auth
+	user: UserDto,
+	token: string // Bearer token, used for auth
  }
  ```
 
@@ -42,8 +42,8 @@
  ### Response
  ```typescript
  interface AuthResponse {
-	"user": UserDto,
-	"token": string // Bearer token, used for auth
+	user: UserDto,
+	token: string // Bearer token, used for auth
  }
  ```
 
