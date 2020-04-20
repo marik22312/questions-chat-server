@@ -11,6 +11,7 @@ To join the waitlist, just send the `READY_FOR_PEERING` event with the following
 interface ReadyForPeerDto {
 	userId: string;
 	name: string;
+	category: string;
 }
 ```
 If a peer is waiting on the list, you will recieve the `PEER_FOUND` with the following data
@@ -19,6 +20,7 @@ interface ChatUser {
 	socketId: string;
 	userId: string;
 	name: string;
+	category: string;
 }
 ```
 
