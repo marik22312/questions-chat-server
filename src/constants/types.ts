@@ -8,6 +8,7 @@ export interface PeerFoundObjectDto {
 export interface ReadyForPeerDto {
 	userId: string;
 	name: string;
+	category: string;
 }
 
 export interface ChatMessageEvent {
@@ -24,6 +25,7 @@ export interface ChatUser {
 	socketId: string;
 	userId: string;
 	name: string;
+	category: string;
 }
 
 export type ActiveChatResponse = ChatMessageResponse
