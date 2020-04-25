@@ -5,6 +5,10 @@ declare namespace NodeJS {
 		MONGODB_URI: string;
 		SECRET_AUTH_TOKEN: string;
 	}
+
+	export interface Global {
+		__MONGO_URI__: string;
+	}
   }
 
   declare module 'logzio-nodejs';
