@@ -5,7 +5,7 @@ import request, { SuperTest, Test } from "supertest";
 
 const chance = Chance();
 
-describe("E2E Test Suite", () => {
+describe.skip("E2E Test Suite", () => {
 	let server: SuperTest<Test>;
 
 	beforeAll(async () => {
