@@ -13,7 +13,8 @@
     "start:dev": "NODE_ENV=development node dist/index.js",
     "start:prod": "NODE_ENV=production node dist/index.js",
     "build": "rm -rf dist && tsc -p tsconfig.json",
-    "test": "jest"
+	"test": "jest",
+	"test:watch": "jest --watch"
   },
   "dependencies": {
     "@hapi/joi": "^17.1.1",
@@ -32,10 +33,17 @@
     "@types/bcrypt": "^3.0.0",
     "@types/express": "^4.17.3",
     "@types/hapi__joi": "^16.0.12",
+    "@types/jest": "^25.2.1",
     "@types/jsonwebtoken": "^8.3.9",
     "@types/mongoose": "^5.7.10",
     "@types/socket.io": "^2.1.4",
+    "@types/socket.io-client": "^1.4.32",
+    "@types/supertest": "^2.0.8",
+    "jest": "^25.4.0",
     "nodemon": "^2.0.2",
+    "socket.io-client": "^2.3.0",
+    "supertest": "^4.0.2",
+    "ts-jest": "^25.4.0",
     "tslint": "^6.1.0",
     "tslint-config-prettier": "^1.18.0",
     "typescript": "^3.8.3"

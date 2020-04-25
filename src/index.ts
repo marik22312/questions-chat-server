@@ -132,3 +132,5 @@ httpServer.listen(parseInt(PORT, 10), () => {
 	// tslint:disable-next-line: no-console
 	console.log('Server is Listening on port', PORT);
 });
+
+export default app;
