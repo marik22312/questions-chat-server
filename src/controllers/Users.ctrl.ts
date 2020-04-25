@@ -1,20 +1,21 @@
-import { UsersService } from "../services/UsersService";
+import { UsersServiceInterface } from "../services/UsersService";
 import * as Joi from "@hapi/joi";
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import { IdentityService } from "../services/identity.service";
 import { RegistrationData } from '../schemas';
+import { ErrorHandler } from '../helpers/ErrorHandler';
 
 
 export class UsersController {
 	constructor(
-		private usersService: UsersService,
+		private usersService: UsersServiceInterface,
 		private identityService: IdentityService
 	) {
 		this.registerNewUser = this.registerNewUser.bind(this);
 		this.loginUser = this.loginUser.bind(this);
 	}
 
-	public async registerNewUser(req: Request, res: Response) {
+	public async registerNewUser(req: Request, res: Response, next: NextFunction) {
 		try {
 			const validationSchema = Joi.object().keys({
 				email: Joi.string().email().required(),
@@ -27,7 +28,7 @@ export class UsersController {
 			const validation = validationSchema.validate(req.body);
 
 			if (validation.error) {
-				return res.send(validation.error.message);
+				throw new ErrorHandler(400, validation.error.message);
 			}
 			const body = req.body as RegistrationData;
 			const passwordHash = await this.identityService.hashPassword(
@@ -40,11 +41,11 @@ export class UsersController {
 				user,
 			});
 		} catch (err) {
-			res.send(err.message);
+			return next(err);
 		}
 	}
 
-	public async loginUser(req: Request, res: Response) {
+	public async loginUser(req: Request, res: Response, next: NextFunction) {
 		try {
 			const validationSchema = Joi.object().keys({
 				email: Joi.string().email(),
@@ -65,7 +66,7 @@ export class UsersController {
 			);
 			return res.json(response);
 		} catch (err) {
-			return res.send(err.message);
+			return next(err)
 		}
 	}
 

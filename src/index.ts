@@ -3,16 +3,19 @@ import "./env";
 import express from 'express';
 import nativeHttpDriver from 'http';
 import socketIo from 'socket.io';
-import { ChatEvents, ErrorEvents, ChatErrors, MessageType } from './constants/events';
-import { ChatUser, ChatMessageResponse, ReadyForPeerDto, ChatMessageEvent } from './constants/types';
-import { PORT, BASE_QUESTION_URI } from './config';
+
+import { ChatUser } from './constants/types';
+import { PORT, BASE_QUESTION_URI, DB_CONNECTION } from './config';
 import { QuestionsService } from './services/QuestionsService';
 import { AuthRouter } from './routes/Auth.router';
-import { connect } from './models';
+import { connect, getStatus } from './models';
 import { ChatService } from './services/ChatService';
+import { handleError } from './helpers/ErrorHandler';
+
+
 
 const app = express();
-connect().then(() => {
+connect(DB_CONNECTION).then(() => {
 	// tslint:disable-next-line: no-console
 	console.log('MongoDB Connected Successfully!');
 });
@@ -33,7 +36,17 @@ app.get('/', (req, res) => {
 	res.redirect('https://github.com/marik22312/questions-chat-server/tree/master/docs');
 });
 
+app.get('/status', (req, res) => {
+	return res.json({
+		server: true,
+		database: getStatus() === 1 ? true : false
+	})
+})
+
 app.use('/', AuthRouter);
+app.use((err, req, res, next) => {
+	handleError(err, res)
+})
 chatService.init();
 
 // io.on('connection', (socket) => {
@@ -133,4 +146,4 @@ httpServer.listen(parseInt(PORT, 10), () => {
 	console.log('Server is Listening on port', PORT);
 });
 
-export default app;
+export {app, httpServer};

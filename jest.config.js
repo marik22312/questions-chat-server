@@ -1,9 +1,11 @@
 module.exports = {
+	preset: '@shelf/jest-mongodb',
 	"roots": [
-	  "<rootDir>/src"
+	  "<rootDir>/src",
+	  "<rootDir>/__tests__",
 	],
 	"testMatch": [
-	  "**/__tests__/**/*.+(ts|tsx|js)",
+	  "**/__tests__/**/*.+(spec|test|e2e).+(ts|tsx|js)",
 	  "**/?(*.)+(spec|test|e2e).+(ts|tsx|js)"
 	],
 	"transform": {
@@ -11,5 +13,5 @@ module.exports = {
 	},
 	testPathIgnorePatterns: [
 		"/*.mock.*/"
-	]
+	],
   }

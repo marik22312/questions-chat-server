@@ -4,6 +4,7 @@ import { UsersService } from "./UsersService";
 
 import bcrypt from "bcrypt";
 import { User } from '../models';
+import { ErrorHandler } from '../helpers/ErrorHandler';
 // import { OAuth2Client } from "google-auth-library";
 
 export interface IdentityServiceConstructorProps {
@@ -57,11 +58,11 @@ export class IdentityService {
 	): Promise<AuthenticationResponse> {
 		const user = await this.usersService.getByEmail(email);
 		if (!user) {
-			throw Error("Wrong email or password");
+			throw new ErrorHandler(400, "Wrong email or password");
 		}
 		const isMatch = await this.compareHash(password, user.password);
 		if (!isMatch) {
-			throw Error("Wrong email or password");
+			throw new ErrorHandler(400, "Wrong email or password");
 		}
 
 		const userAuthObj = User(user);

@@ -24,7 +24,7 @@ export interface RegistrationData {
 	nickname: string;
 	gender: IUsers['gender'];
 	preference: IUsers['preference'];
-	password: string;
+	password?: string;
 }
 
 export const UserSchema: Schema<UserWithPassword> = new Schema({
